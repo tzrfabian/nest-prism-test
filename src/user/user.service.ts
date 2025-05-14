@@ -29,20 +29,4 @@ export class UserService {
         });
         return user;
     }
-
-    async validateUser(email: string, password: string) {
-        const user = await this.findUserByEmail(email);
-        if (!user) {
-            return null;
-        }
-        const isValid = await bcrypt.compare(password, user.password);
-        if (!isValid) {
-            return null;
-        }
-        return {
-            name: user.name,
-            email: user.email,
-            message: 'User validated successfully'
-        };
-    }
 }
