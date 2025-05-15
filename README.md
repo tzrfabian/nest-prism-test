@@ -1,25 +1,157 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Nest Base Starter API Documentation
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Base URL
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+```
+http://localhost:5000/
+```
+
+---
+
+## Root Endpoints
+
+### `GET /`
+
+- **Description:** Returns a hello message.
+- **Response:**  
+  `200 OK`
+  ```
+  Hello World!
+  ```
+
+### `GET /ping`
+
+- **Description:** Health check endpoint.
+- **Response:**  
+  `200 OK`
+  ```
+  Pong!
+  ```
+
+---
+
+## Auth Endpoints
+
+Base path: `/auth`
+
+### `POST /auth/login`
+
+- **Description:** Login with email and password.
+- **Request Body:**
+  ```json
+  {
+    "email": "user@example.com",
+    "password": "yourPassword"
+  }
+  ```
+- **Response:**
+  - `200 OK`
+    ```json
+    {
+      "message": "Login successful"
+    }
+    ```
+  - `401 Unauthorized`
+    ```json
+    {
+      "statusCode": 401,
+      "message": "Invalid credentials",
+      "error": "Unauthorized"
+    }
+    ```
+
+---
+
+### `POST /auth/register`
+
+- **Description:** Register a new user.
+- **Request Body:**
+  ```json
+  {
+    "name": "User Name",
+    "email": "user@example.com",
+    "password": "yourPassword"
+  }
+  ```
+- **Response:**
+  - `201 Created`
+    ```json
+    {
+      "message": "User created successfully",
+      "user": {
+        "id": "userId",
+        "name": "User Name",
+        "email": "user@example.com"
+      }
+    }
+    ```
+  - `401 Unauthorized`
+    ```json
+    {
+      "statusCode": 401,
+      "message": "Email already exists",
+      "error": "Unauthorized"
+    }
+    ```
+
+---
+
+## User Endpoints
+
+> **Note:** No public user endpoints are currently exposed.
+
+---
+
+## Models
+
+### User
+
+| Field      | Type    | Description         |
+|------------|---------|---------------------|
+| id         | string  | Unique identifier   |
+| name       | string  | User's name         |
+| email      | string  | User's email        |
+| password   | string  | Hashed password     |
+| createdAt  | Date    | Creation timestamp  |
+| updatedAt  | Date    | Update timestamp    |
+
+---
+
+## Error Responses
+
+- `404 Not Found`  
+  Returned if the endpoint does not exist.
+
+- `401 Unauthorized`  
+  Returned for invalid credentials or duplicate registration.
+
+---
+
+## Example Usage
+
+### Register
+
+```sh
+curl -X POST http://localhost:5000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Alice","email":"alice@example.com","password":"secret"}'
+```
+
+### Login
+
+```sh
+curl -X POST http://localhost:5000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"alice@example.com","password":"secret"}'
+```
+
+---
+
+For more details, see:
+- app.controller.ts
+- auth.controller.ts
+- auth.service.ts
+- schema.prisma
 
 ## Description
 
@@ -86,13 +218,3 @@ Check out a few resources that may come in handy when working with NestJS:
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
