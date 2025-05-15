@@ -1,5 +1,9 @@
 # Nest Base Starter API Documentation
 
+## Description
+
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+
 ## Base URL
 
 ```
@@ -152,10 +156,6 @@ For more details, see:
 - auth.controller.ts
 - auth.service.ts
 - schema.prisma
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Project setup
 
