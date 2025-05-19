@@ -5,6 +5,7 @@ import { PrismaService } from './prisma/prisma.service';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
 
+// Import AuthModule and UserModule, register AppController and AppService
 @Module({
   imports: [AuthModule, UserModule],
   providers: [PrismaService, AppService],

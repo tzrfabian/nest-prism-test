@@ -3,6 +3,7 @@ import { UserService } from 'src/user/user.service';
 import { AuthDto } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt';
 
+// Handles login and registration logic using UserService
 @Injectable()
 export class AuthService {
     constructor(private userService: UserService) {}
@@ -23,6 +24,10 @@ export class AuthService {
     async register(dto: AuthDto) {
         const userExist = await this.userService.findUserByEmail(dto.email);
         if(userExist) throw new UnauthorizedException('Email already exists');
+        
+        if(!dto.name || !dto.email || !dto.password) throw new UnauthorizedException('All fields are required');
+
+        if(dto.password.length < 6) throw new UnauthorizedException('Password must be at least 6 characters long');
 
         const hashPass = await bcrypt.hash(dto.password, 10);
         const user = await this.userService.createUser({

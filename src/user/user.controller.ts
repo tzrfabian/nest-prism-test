@@ -2,10 +2,10 @@ import { Controller, Get } from "@nestjs/common";
 import { UserService } from "./user.service";
 
 
-@Controller("users")
+@Controller("api")
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  @Get()
+  @Get("users")
   async getAllUsers() {
     return this.userService.getAllUsers();
   }

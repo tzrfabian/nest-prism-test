@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 
+// Handles user creation and lookup using PrismaService
 @Injectable()
 export class UserService {
     constructor(private prisma: PrismaService) {}
