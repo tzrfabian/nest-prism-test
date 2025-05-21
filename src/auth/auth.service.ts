@@ -17,9 +17,7 @@ export class AuthService {
         console.log('User from DB:', user);
         if (!user) throw new UnauthorizedException('Invalid credentials');
         if (!user.password) throw new UnauthorizedException('Invalid credentials');
-        console.log('Comparing:', dto.password, 'with hash:', user.password);
         const isMatch = await bcrypt.compare(dto.password, user.password);
-        console.log('Password match:', isMatch);
         if (!isMatch) throw new UnauthorizedException('Invalid credentials');
 
         const payload = {
