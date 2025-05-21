@@ -34,6 +34,29 @@ http://localhost:5000/
 
 ---
 
+## Users Endpoints
+Base path: `/users`
+
+### `GET /api/users/all`
+- **Description:** Fetch all users data
+- **Response:**
+  - `200 OK`
+    ```json
+    [
+      {
+          "id": "<user_id>",
+          "name": "<user_name>",
+          "email": "<user_email>"
+      },
+      {
+          "id": "<user_id>",
+          "name": "<user_name>",
+          "email": "<user_email>"
+      }...
+    ]
+    ```
+---
+
 ## Auth Endpoints
 
 Base path: `/auth`
