@@ -5,10 +5,11 @@ import { PrismaService } from './prisma/prisma.service';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { PetModule } from './pet/pet.module';
 
 // Import AuthModule and UserModule, register AppController and AppService
 @Module({
-  imports: [AuthModule, UserModule],
+  imports: [AuthModule, UserModule, PetModule],
   providers: [PrismaService, AppService],
   exports: [PrismaService],
   controllers: [AppController],
