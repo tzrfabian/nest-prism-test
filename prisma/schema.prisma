@@ -22,4 +22,19 @@ model User {
   password  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  pets      Pet[]
+}
+
+model Pet {
+  id        String   @id @default(cuid())
+  name      String?
+  species   String?
+  breed     String?
+  age       Int?
+  weight    Float?
+  owner     User @relation(fields: [ownerId], references: [id])
+  ownerId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
