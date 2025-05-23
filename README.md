@@ -1,98 +1,98 @@
-# Nest Base Starter API Documentation
+# NestJS Prisma Starter API
 
-## Description
+A starter REST API built with [NestJS](https://nestjs.com/) and [Prisma](https://www.prisma.io/).
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Base URL
+## Project Structure
 
 ```
-http://localhost:5000/
+.
+├── prisma/                # Prisma schema and migrations
+├── src/
+│   ├── app.controller.ts  # Root and ping endpoints
+│   ├── app.module.ts      # Main module
+│   ├── app.service.ts     # Root service
+│   ├── main.ts            # Entry point
+│   ├── auth/              # Auth module (JWT, login, register)
+│   ├── user/              # User module (user CRUD)
+│   ├── pet/               # Pet module (pet CRUD)
+│   ├── middlewares/       # Custom middlewares
+│   └── prisma/            # Prisma service
+├── generated/             # Generated Prisma client (gitignored)
+├── test/                  # E2E tests
+├── .env                   # Environment variables
+├── package.json
+└── ...
 ```
 
 ---
 
-## Root Endpoints
+## Environment Variables
 
-### `GET /`
+Create a `.env` file in your project root with:
 
-- **Description:** Returns a hello message.
-- **Response:**  
-  `200 OK`
-  ```
-  Hello World!
-  ```
-
-### `GET /ping`
-
-- **Description:** Health check endpoint.
-- **Response:**  
-  `200 OK`
-  ```
-  Pong!
-  ```
+```
+DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<db>
+JWT_SECRET=your_jwt_secret
+PORT=5000
+```
 
 ---
 
-## Users Endpoints
-Base path: `/users`
+## Installation
 
-### `GET /api/users/all`
-- **Description:** Fetch all users data
-- **Response:**
-  - `200 OK`
-    ```json
-    [
-      {
-          "id": "<user_id>",
-          "name": "<user_name>",
-          "email": "<user_email>"
-      },
-      {
-          "id": "<user_id>",
-          "name": "<user_name>",
-          "email": "<user_email>"
-      }...
-    ]
-    ```
----
-
-## Auth Endpoints
-
-Base path: `/auth`
-
-### `POST /auth/login`
-
-- **Description:** Login with email and password.
-- **Request Body:**
-  ```json
-  {
-    "email": "user@example.com",
-    "password": "yourPassword"
-  }
-  ```
-- **Response:**
-  - `200 OK`
-    ```json
-    {
-      "message": "Login successful"
-    }
-    ```
-  - `401 Unauthorized`
-    ```json
-    {
-      "statusCode": 401,
-      "message": "Invalid credentials",
-      "error": "Unauthorized"
-    }
-    ```
+```bash
+npm install
+```
 
 ---
 
-### `POST /auth/register`
+## Database Setup
 
-- **Description:** Register a new user.
-- **Request Body:**
+1. **Configure your database** in `.env`.
+2. **Run migrations** and generate the Prisma client:
+   ```bash
+   npx prisma migrate deploy
+   npx prisma generate
+   ```
+
+---
+
+## Running the App
+
+```bash
+# development
+npm run start
+
+# watch mode
+npm run start:dev
+
+# production
+npm run start:prod
+```
+
+The API will be available at `http://localhost:5000/api`.
+
+---
+
+## API Endpoints
+
+### Root
+
+- `GET /api/`  
+  Returns: `Hello World!`
+
+- `GET /api/ping`  
+  Returns: `Pong!`
+
+---
+
+### Auth
+
+- `POST /api/auth/register`  
+  Register a new user.  
+  **Body:**
   ```json
   {
     "name": "User Name",
@@ -100,144 +100,178 @@ Base path: `/auth`
     "password": "yourPassword"
   }
   ```
-- **Response:**
-  - `201 Created`
-    ```json
-    {
-      "message": "User created successfully",
-      "user": {
-        "id": "userId",
-        "name": "User Name",
-        "email": "user@example.com"
-      }
+  **Response:**  
+  `201 Created`
+  ```json
+  {
+    "message": "User created successfully",
+    "user": {
+      "id": "userId",
+      "name": "User Name",
+      "email": "user@example.com"
     }
-    ```
-  - `401 Unauthorized`
-    ```json
-    {
-      "statusCode": 401,
-      "message": "Email already exists",
-      "error": "Unauthorized"
-    }
-    ```
+  }
+  ```
+
+- `POST /api/auth/login`  
+  Login and receive a JWT token.  
+  **Body:**
+  ```json
+  {
+    "email": "user@example.com",
+    "password": "yourPassword"
+  }
+  ```
+  **Response:**  
+  `200 OK`
+  ```json
+  {
+    "message": "Login successful",
+    "token": "<jwt_token>"
+  }
+  ```
 
 ---
 
-## User Endpoints
+### Users
 
-> **Note:** No public user endpoints are currently exposed.
+- `GET /api/users/all`  
+  **Requires JWT**  
+  Returns all users (id, name, email).
+
+  **Header:**  
+  `Authorization: Bearer <token>`
+
+  **Response:**
+  ```json
+  [
+    {
+      "id": "userId",
+      "name": "User Name",
+      "email": "user@example.com"
+    }
+  ]
+  ```
 
 ---
 
-## Models
+### Pets
 
-### User
+- `POST /api/pets/add`  
+  **Requires JWT**  
+  Add a new pet for the authenticated user.
 
-| Field      | Type    | Description         |
-|------------|---------|---------------------|
-| id         | string  | Unique identifier   |
-| name       | string  | User's name         |
-| email      | string  | User's email        |
-| password   | string  | Hashed password     |
-| createdAt  | Date    | Creation timestamp  |
-| updatedAt  | Date    | Update timestamp    |
+  **Header:**  
+  `Authorization: Bearer <token>`
+
+  **Body:**
+  ```json
+  {
+    "name": "Pulu",
+    "species": "Cat",
+    "breed": "Siamese",
+    "age": 2,
+    "weight": 4.5
+  }
+  ```
+  **Response:**
+  ```json
+  {
+    "id": "petId",
+    "name": "Pulu",
+    "species": "Cat",
+    "breed": "Siamese",
+    "age": 2,
+    "weight": 4.5,
+    "ownerId": "userId",
+    "createdAt": "...",
+    "updatedAt": "..."
+  }
+  ```
+
+- `GET /api/pets`  
+  **Requires JWT**  
+  Get all pets.
+
+  **Header:**  
+  `Authorization: Bearer <token>`
+
+  **Response:**
+  ```json
+  [
+    {
+      "id": "petId",
+      "name": "Pulu",
+      "species": "Cat",
+      "breed": "Siamese",
+      "age": 2,
+      "weight": 4.5,
+      "ownerId": "userId",
+      "createdAt": "...",
+      "updatedAt": "..."
+    }
+  ]
+  ```
+
+- `DELETE /api/pets?idDelete=<petId>`  
+  **Requires JWT**  
+  Only the owner can delete their pet.
+
+  **Header:**  
+  `Authorization: Bearer <token>`
+
+  **Response:**
+  ```json
+  { "message": "Pet deleted successfully" }
+  ```
 
 ---
 
 ## Error Responses
 
-- `404 Not Found`  
-  Returned if the endpoint does not exist.
-
-- `401 Unauthorized`  
-  Returned for invalid credentials or duplicate registration.
+- `401 Unauthorized` — Missing or invalid JWT token.
+- `403 Forbidden` — Not allowed to access or modify resource.
+- `404 Not Found` — Resource does not exist.
 
 ---
 
-## Example Usage
-
-### Register
-
-```sh
-curl -X POST http://localhost:5000/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Alice","email":"alice@example.com","password":"secret"}'
-```
-
-### Login
-
-```sh
-curl -X POST http://localhost:5000/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"alice@example.com","password":"secret"}'
-```
-
----
-
-For more details, see:
-- app.controller.ts
-- auth.controller.ts
-- auth.service.ts
-- schema.prisma
-
-## Project setup
-
-```bash
-$ npm install
-```
-
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
+## Testing
 
 ```bash
 # unit tests
-$ npm run test
+npm run test
 
 # e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run test:e2e
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Notes
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+- The Prisma client is generated in `/generated/prisma/client` (see `.gitignore`).
+- All protected routes require a valid JWT in the `Authorization` header.
+- Only pet owners can delete their own pets.
+
+---
+
+## Useful Commands
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Run migrations and generate client
+npx prisma migrate deploy
+npx prisma generate
+
+# Start the app
+npm run start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
 ## Resources
 
-Check out a few resources that may come in handy when working with NestJS:
+- [NestJS Documentation](https://docs.nestjs.com)
+- [Prisma Documentation](https://www.prisma.io/docs/)
+- [JWT Guide](https://jwt.io/introduction/)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
