@@ -31,4 +31,24 @@ export class PetService {
             updatedAt: pet.updatedAt
         }));
     }
+
+    async deletePet(id: string, userId: string) {
+        const pet = await this.prisma.pet.findUnique({
+            where: { id }
+        });
+
+        if (!pet) {
+            return { message: 'Pet not found' };
+        }
+
+        if (pet.ownerId !== userId) {
+            return { message: 'You are not authorized to delete this pet' };
+        }
+
+        await this.prisma.pet.delete({
+            where: { id }
+        });
+
+        return { message: 'Pet deleted successfully' };
+    }
 }

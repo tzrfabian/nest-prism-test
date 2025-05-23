@@ -1,4 +1,4 @@
-import { Controller, Post, Req, UseGuards, Body, Get } from '@nestjs/common';
+import { Controller, Post, Req, UseGuards, Body, Get, ForbiddenException, Delete, Query } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PetService } from './pet.service';
 import { PetDto } from './dto/pet.dto';
@@ -22,6 +22,14 @@ export class PetController {
     @Get('')
     async getAllPets() {
         return this.petService.getAllPets();
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('')
+    async deletePet(@Query('idDelete') id: string, @Req() req) {
+        const userId = req.user.userId; // still need to check if the user is authenticated
+        if(!userId) throw new ForbiddenException('User not authenticated');
+        return this.petService.deletePet(id, userId);
     }
     
 
