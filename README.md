@@ -213,6 +213,28 @@ The API will be available at `http://localhost:5000/api`.
   ]
   ```
 
+- `GET /api/pets/find?petId=<petId>`  
+  **Requires JWT**  
+  Find a pet by its Id
+
+  **Header:**  
+  `Authorization: Bearer <token>`
+
+  **Response:**
+  ```json
+  {
+    "id": "<petId>",
+    "name": "bombardilo",
+    "species": "crocodilo",
+    "breed": "carnivore",
+    "age": 5,
+    "weight": 20.5,
+    "ownerId": "<ownerId>",
+    "createdAt": "...",
+    "updatedAt": "..."
+  }
+  ```
+
 - `DELETE /api/pets?idDelete=<petId>`  
   **Requires JWT**  
   Only the owner can delete their pet.
