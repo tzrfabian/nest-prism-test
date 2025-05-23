@@ -1,4 +1,4 @@
-import { Controller, Post, Req, UseGuards, Body, Get, ForbiddenException, Delete, Query, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Controller, Post, Req, UseGuards, Body, Get, ForbiddenException, Delete, Query, BadRequestException, NotFoundException, Put } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PetService } from './pet.service';
 import { PetDto } from './dto/pet.dto';
@@ -14,7 +14,7 @@ export class PetController {
         if (!ownerId) {
             throw new ForbiddenException('User not authenticated');
         }
-        console.log('Owner ID:', ownerId);
+        // console.log('Owner ID:', ownerId);
         return this.petService.addPet(dto, ownerId);
     }
 
@@ -35,6 +35,19 @@ export class PetController {
             throw new NotFoundException('Pet not found');
         }
         return pet;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Put('update')
+    async updatePet(@Body() dto: PetDto, @Query('petId') id: string, @Req() req) {
+        const userId = req.user.userId; // still need to check if the user is authenticated
+        if (!userId) {
+            throw new ForbiddenException('User not authenticated');
+        }
+        if (!id) {
+            throw new BadRequestException('Pet ID not provided');
+        }
+        return this.petService.updatePet(dto, id, userId);
     }
 
     @UseGuards(JwtAuthGuard)

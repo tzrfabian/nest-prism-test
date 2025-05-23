@@ -54,6 +54,28 @@ export class PetService {
         };
     }
 
+    async updatePet(dto: PetDto, id: string, userId: string) {
+        const pet = await this.prisma.pet.findUnique({
+            where: { id }
+        });
+
+        if (!pet) {
+            return { message: 'Pet not found' };
+        }
+
+        if (pet.ownerId !== userId) {
+            return { message: 'You are not authorized to update this pet' };
+        }
+
+        const updatedPet = await this.prisma.pet.update({
+            where: { id },
+            data: {
+            ...dto
+            }
+        });
+        return { message: 'Pet updated successfully', pet: updatedPet };
+    }
+
     async deletePet(id: string, userId: string) {
         const pet = await this.prisma.pet.findUnique({
             where: { id }

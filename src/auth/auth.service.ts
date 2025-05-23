@@ -14,7 +14,7 @@ export class AuthService {
 
     async login(dto: AuthDtoLogin) {
         const user = await this.userService.findUserByEmail(dto.email);
-        console.log('User from DB:', user);
+        // console.log('User from DB:', user);
         if (!user) throw new UnauthorizedException('Invalid credentials');
         if (!user.password) throw new UnauthorizedException('Invalid credentials');
         const isMatch = await bcrypt.compare(dto.password, user.password);
