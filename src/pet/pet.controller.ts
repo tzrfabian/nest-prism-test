@@ -25,7 +25,7 @@ export class PetController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('pet')
+    @Get('find')
     async getPetById(@Query('petId') id: string) {
         if (!id) {
             throw new BadRequestException('Pet ID not provided');
