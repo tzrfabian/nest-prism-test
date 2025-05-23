@@ -32,6 +32,28 @@ export class PetService {
         }));
     }
 
+    async getPetById(id: string) {
+        const pet = await this.prisma.pet.findUnique({
+            where: { id }
+        });
+
+        if (!pet) {
+            return { message: 'Pet not found' };
+        }
+
+        return {
+            id: pet.id,
+            name: pet.name,
+            species: pet.species,
+            breed: pet.breed,
+            age: pet.age,
+            weight: pet.weight,
+            ownerId: pet.ownerId,
+            createdAt: pet.createdAt,
+            updatedAt: pet.updatedAt
+        };
+    }
+
     async deletePet(id: string, userId: string) {
         const pet = await this.prisma.pet.findUnique({
             where: { id }
