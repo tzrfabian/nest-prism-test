@@ -235,6 +235,38 @@ The API will be available at `http://localhost:5000/api`.
   }
   ```
 
+  `PUT /api/pets/update?petId=<petId>`
+  **Requires JWT**
+  Update pet data by its Id.
+
+  **Header:**  
+  `Authorization: Bearer <token>`
+
+  **Body:**
+  ```json
+  {
+    "name": "Pulu",
+    "species": "Cat",
+    "breed": "Siamese",
+    "age": 2,
+    "weight": 4.5
+  }
+  ```
+  **Response:**
+  ```json
+  {
+    "id": "petId",
+    "name": "Pulu",
+    "species": "Cat",
+    "breed": "Siamese",
+    "age": 2,
+    "weight": 4.5,
+    "ownerId": "userId",
+    "createdAt": "...",
+    "updatedAt": "..."
+  }
+  ```
+
 - `DELETE /api/pets?idDelete=<petId>`  
   **Requires JWT**  
   Only the owner can delete their pet.
