@@ -235,7 +235,7 @@ The API will be available at `http://localhost:5000/api`.
   }
   ```
 
-  `PUT /api/pets/update?petId=<petId>`
+- `PUT /api/pets/update?petId=<petId>`
   **Requires JWT**
   Update pet data by its Id.
 
