@@ -18,6 +18,6 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LoggerMiddleware) // Apply LoggerMiddleware
-      .forRoutes('users'); // Apply middleware to all routes
+      .forRoutes('*'); // Apply middleware to all routes
   }
 }
