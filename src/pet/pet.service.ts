@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PetDto } from './dto/pet.dto';
 
@@ -22,7 +22,7 @@ export class PetService {
     async getAllPets() {
         try {
             const pets = await this.prisma.pet.findMany();
-            if (!pets || pets.length === 0) return { message: 'No pets found' };
+            if (!pets || pets.length === 0) throw new NotFoundException('No pets found');
             
             return pets.map(pet => ({
                 id: pet.id,
@@ -36,6 +36,9 @@ export class PetService {
                 updatedAt: pet.updatedAt
             }));
         } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
             throw new Error(`Error fetching pets: ${error.message}`);
         }
     }
@@ -47,7 +50,7 @@ export class PetService {
             });
     
             if (!pet) {
-                return { message: 'Pet not found' };
+                throw new NotFoundException(`Pet with ID ${id} not found`);
             }
     
             return {
@@ -62,6 +65,9 @@ export class PetService {
                 updatedAt: pet.updatedAt
             };
         } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
             throw new Error(`Error fetching pet by ID: ${error.message}`);         
         }
     }
@@ -69,7 +75,7 @@ export class PetService {
     async updatePet(dto: PetDto, id: string, userId: string) {
         try {
             const pet = await this.prisma.pet.findUnique({
-                where: { id }
+                where: { id: id }
             });
     
             if (!pet) {
@@ -77,7 +83,7 @@ export class PetService {
             }
     
             if (pet.ownerId !== userId) {
-                return { message: 'You are not authorized to update this pet' };
+                throw new ForbiddenException('You are not authorized to update this pet');
             }
     
             const updatedPet = await this.prisma.pet.update({
@@ -88,6 +94,9 @@ export class PetService {
             });
             return { message: 'Pet updated successfully', pet: updatedPet };
         } catch (error) {
+            if (error instanceof ForbiddenException) {
+                throw error;
+            }
             throw new Error(`Error updating pet: ${error.message}`);
         }
     }
@@ -103,7 +112,7 @@ export class PetService {
             }
     
             if (pet.ownerId !== userId) {
-                return { message: 'You are not authorized to delete this pet' };
+                throw new ForbiddenException('You are not authorized to delete this pet');
             }
     
             await this.prisma.pet.delete({
@@ -112,6 +121,9 @@ export class PetService {
     
             return { message: 'Pet deleted successfully' };
         } catch (error) {
+            if (error instanceof ForbiddenException) {
+                throw error;
+            }
             throw new Error(`Error deleting pet: ${error.message}`);
         }
     }
